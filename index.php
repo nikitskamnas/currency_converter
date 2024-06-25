@@ -1,5 +1,6 @@
 <?php
 session_start();
+require 'log.php';
 
 // Check if user is not logged in, redirect to login page
 if (!isset($_SESSION['username'])) {
@@ -18,17 +19,23 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Check connection
 if ($conn->connect_error) {
+    logMessage("Connection failed: " . $conn->connect_error);
     die("Connection failed: " . $conn->connect_error);
 }
 
 // Fetch all currencies
 $currencies = [];
-$result = $conn->query("SELECT name, rate FROM currencies");
+$result = $conn->query("SELECT code, rate FROM currencies");
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        $currencies[$row['name']] = $row['rate'];
+        $currencies[$row['code']] = $row['rate'];
     }
+}
+
+// Ensure USD is included
+if (!isset($currencies['USD'])) {
+    $currencies['USD'] = 1.0;
 }
 
 $conn->close();
@@ -55,9 +62,9 @@ $entered_amount = isset($_POST['amount']) ? $_POST['amount'] : '';
                 <label for="input_currency">Select Input Currency:</label>
                 <select name="input_currency" id="input_currency" class="form-control">
                     <?php
-                    foreach ($currencies as $name => $rate) {
-                        $selected = ($name == $selected_currency) ? 'selected' : '';
-                        echo "<option value=\"$name\" $selected>$name</option>";
+                    foreach ($currencies as $code => $rate) {
+                        $selected = ($code == $selected_currency) ? 'selected' : '';
+                        echo "<option value=\"$code\" $selected>$code</option>";
                     }
                     ?>
                 </select>
@@ -67,6 +74,7 @@ $entered_amount = isset($_POST['amount']) ? $_POST['amount'] : '';
                 <input type="text" name="amount" id="amount" class="form-control" pattern="[0-9]+(\.[0-9]{1,4})?" title="Please enter a valid float number (up to 4 decimal places)" value="<?php echo htmlspecialchars($entered_amount); ?>" required>
             </div>
             <button type="submit" name="convert" class="btn btn-primary">Convert</button>
+            <button type="submit" name="update_rate" class="btn btn-secondary" formaction="update_currencies.php">Update Rate</button>
         </form>
 
         <?php
@@ -85,15 +93,21 @@ $entered_amount = isset($_POST['amount']) ? $_POST['amount'] : '';
                 echo "<table class='table table-bordered mt-3'><thead class='thead-dark'><tr>";
 
                 // Display table headers
-                foreach ($currencies as $name => $rate) {
-                    echo "<th>$name</th>";
+                foreach ($currencies as $code => $rate) {
+                    echo "<th>$code</th>";
                 }
 
                 echo "</tr></thead><tbody><tr>";
 
                 // Display converted amounts with approximation to 3 decimal places
-                foreach ($currencies as $name => $rate) {
-                    $converted_amount = number_format(($amount * $rate) / $currencies[$input_currency], 3);
+                foreach ($currencies as $code => $rate) {
+                    if ($input_currency == 'USD') {
+                        $converted_amount = number_format($amount * $rate, 3);
+                    } elseif ($code == 'USD') {
+                        $converted_amount = number_format($amount / $currencies[$input_currency], 3);
+                    } else {
+                        $converted_amount = number_format(($amount * $rate) / $currencies[$input_currency], 3);
+                    }
                     echo "<td>$converted_amount</td>";
                 }
 
