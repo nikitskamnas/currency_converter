@@ -1,5 +1,6 @@
 <?php
 session_start();
+require 'log.php'; // Include the logging functionality
 
 // Database credentials
 $servername = "localhost";
@@ -12,6 +13,7 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Check connection
 if ($conn->connect_error) {
+    logMessage("Connection failed: " . $conn->connect_error);
     die("Connection failed: " . $conn->connect_error);
 }
 
@@ -30,6 +32,7 @@ if (isset($_POST['username'], $_POST['password'])) {
     
     // Fetch machine's IP address
     $machine_ip = getMachineIPAddress();
+    logMessage("Login attempt for username: $username from IP: $machine_ip");
 
     // Query to fetch user data including IP restrictions
     $sql = "SELECT id, username, password, ip_restrictions FROM users WHERE username = ?";
@@ -49,18 +52,22 @@ if (isset($_POST['username'], $_POST['password'])) {
             // Check IP restriction against machine's IP address
             if (checkIPRestrictions($machine_ip, $ip_restrictions_json)) {
                 $_SESSION['username'] = $username;
+                logMessage("User $username logged in successfully from IP: $machine_ip");
                 
                 // Redirect to dashboard or homepage
                 header('Location: index.php');
                 exit;
             } else {
                 $error_message = "Access denied due to IP restrictions.";
+                logMessage("Access denied for username: $username due to IP restrictions.");
             }
         } else {
             $error_message = "Invalid username or password.";
+            logMessage("Invalid password attempt for username: $username");
         }
     } else {
         $error_message = "Invalid username or password.";
+        logMessage("Invalid username attempt: $username");
     }
 
     $stmt->close();
