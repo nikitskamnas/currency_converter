@@ -1,0 +1,14 @@
+[2024-06-25 20:12:09] - Currency data updated successfully.
+[2024-06-25 20:14:55] - Currency data updated successfully.
+[2024-06-25 20:18:14] - Currency data updated successfully.
+[2024-06-25 20:21:38] - Login attempt for username: nikita from IP: 192.168.1.2
+[2024-06-25 20:21:38] - User nikita logged in successfully from IP: 192.168.1.2
+[2024-06-25 20:31:40] - Currency data updated successfully.
+[2024-06-25 20:34:54] - Currency data updated successfully.
+[2024-06-25 20:35:23] - Currency data updated successfully.
+[2024-06-25 20:35:49] - Login attempt for username: nikita from IP: 192.168.1.2
+[2024-06-25 20:35:50] - User nikita logged in successfully from IP: 192.168.1.2
+[2024-06-25 20:35:59] - Login attempt for username: nikita from IP: 192.168.1.2
+[2024-06-25 20:35:59] - User nikita logged in successfully from IP: 192.168.1.2
+[2024-06-25 20:37:09] - Login attempt for username: nikita from IP: 192.168.1.2
+[2024-06-25 20:37:09] - User nikita logged in successfully from IP: 192.168.1.2
