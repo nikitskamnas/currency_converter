@@ -123,6 +123,7 @@ function checkIPRestrictions($machine_ip, $ip_restrictions_json) {
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" class="form-control" required>
               </div>
+
               <button type="submit" name="login" class="btn btn-login btn-block">submit</button>
             </form>
           </div>
