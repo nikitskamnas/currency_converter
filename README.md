@@ -31,6 +31,9 @@ This project is a web-based currency converter application that allows users to 
 3. **Login**
     - Navigate to the login page (`login.php`).
     - Enter the username and password.
+    - Testing Credentials-
+    Username - User_1
+    Password - 123
 
 3. **Login**
     - Navigate to the login page (`admin.php`).
